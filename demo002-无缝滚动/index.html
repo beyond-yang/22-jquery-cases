@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        #wrap {
+            width: 520px;
+            height: 62px;
+            /*border: 1px solid red;*/
+            margin: 200px auto;
+        }
+        #wrap .show {
+            overflow: hidden;
+            float: left;
+            width: 462px;
+            height: 62px;
+            margin: 0 8px;
+            border:1px solid #1e4b99;
+        }
+        #wrap ul {
+            width: 1000%;
+            margin-left: 0;
+        }
+        #wrap li {
+            float: left;
+            width: 132px;
+            height: 59px;
+            border: 1px solid #ddd;
+            margin: 0 10px
+        }
+        #wrap .pre,
+        #wrap .next{
+            float: left;
+            width: 20px;
+            height: 59px;
+            cursor: pointer;
+        }
+
+    </style>
+    <script src="js/jquery-1.12.1.min.js"></script>
+</head>
+<body>
+<div id="wrap">
+    <div class="pre"><img src="img/prev.png" alt=""></div>
+    <div class="show">
+        <ul>
+            <li><img src="img/1.png" alt=""></li>
+            <li><img src="img/2.png" alt=""></li>
+            <li><img src="img/3.png" alt=""></li>
+            <li><img src="img/4.png" alt=""></li>
+            <li><img src="img/1.png" alt=""></li>
+            <li><img src="img/2.png" alt=""></li>
+            <li><img src="img/3.png" alt=""></li>
+        </ul>
+    </div>
+    <div class="next"><img src="img/next.png" alt=""></div>
+</div>
+<script>
+    var $wrap=$("#wrap");
+    var $pre=$("#wrap .pre");
+    var $next=$("#wrap .next");
+    var $ul=$("#wrap ul");
+    var liWidth=$("#wrap .show li").width();
+    var index=0;
+    var newTime=new Date();
+    var timer;
+    //右按钮的点击事件
+    $next.click(function () {
+        if (new Date()-newTime>=500) {
+            newTime=new Date();
+            auto();
+        }
+    });
+    //左按钮的点击事件
+    $pre.click(function () {
+        if (new Date()-newTime>=500) {
+            newTime=new Date();
+            if (index==0) {
+                $ul.css({
+                    marginLeft: -4*(liWidth+22)+"px"
+                });
+                index=4;
+            }
+            index--;
+            $ul.stop(true).animate({
+                marginLeft: -index*(liWidth+22)+"px"
+            },500);
+        }
+    });
+    //自动轮播功能
+    timer=setInterval(function () {
+        auto();
+    },1000);
+    //鼠标移入wrap停止自动播放
+    $wrap.hover(function () {
+        clearInterval(timer);
+    },function () {
+        timer=setInterval(function () {
+            auto();
+        },1000);
+    });
+    function auto() {
+        index++;
+        $ul.stop(true).animate({
+            marginLeft: -index*(liWidth+22)+"px"
+        },500,function () {
+            if (index==4) {
+                $ul.css({
+                    marginLeft: 0
+                });
+                index=0;
+            }
+        })
+    }
+</script>
+</body>
+</html>

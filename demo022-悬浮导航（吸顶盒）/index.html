@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            height: 1500px;
+        }
+        #div1 {
+            width: 1201px;
+            height: 160px;
+            margin: 0 auto;
+        }
+        #nav {
+            width: 100%;
+            min-width: 1201px;
+            height: 50px;
+            border-bottom: 1px solid #f69;
+        }
+        #nav.on {
+            position: fixed;
+            top: 0;
+            background-color: #fff;
+        }
+        #nav ul {
+            width: 1201px;
+            height: 50px;
+            margin: 0 auto;
+        }
+        #nav ul li {
+            float: left;
+            list-style: none;
+            padding: 12px 22px;
+        }
+        #nav ul li:hover {
+            color: #f69;
+        }
+        #nav ul li:nth-child(n+10) {
+            color: #f69;
+            font-weight: 700;
+        }
+        #div2 {
+            width:1201px;
+            height: 737px;
+            margin: 0 auto;
+        }
+        #div2.marginTop{
+            margin-top: 50px;
+        }
+    </style>
+    <script src="js/jquery-1.12.1.min.js"></script>
+</head>
+<body>
+<div id="div1">
+    <img src="1.png" alt="">
+</div>
+<div id="nav">
+    <ul>
+        <li>首页</li>
+        <li>最新</li>
+        <li>上衣</li>
+        <li>裙子</li>
+        <li>裤子</li>
+        <li>鞋子</li>
+        <li>包包</li>
+        <li>配饰</li>
+        <li>更多</li>
+        <li>Hi范儿</li>
+        <li>明星同款</li>
+        <li>韩国馆</li>
+        <li>团购</li>
+        <li>福利社</li>
+    </ul>
+</div>
+<div id="div2"><img src="2.png" alt=""></div>
+<script>
+    (function () {
+        var $nav=$("#nav");
+        var $div2=$("#div2");
+        var navTop=$nav.offset().top;
+        $(window).scroll(function () {
+            var scrollTop=$(document).scrollTop();
+            if (scrollTop>=navTop) {
+                $nav.addClass("on");
+                $div2.addClass("marginTop");
+            } else {
+                $nav.removeClass("on");
+                $div2.removeClass("marginTop");
+            }
+        });
+    })();
+</script>
+</body>
+</html>

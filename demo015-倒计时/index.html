@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #date p {
+            float: left;
+            height: 50px;
+            line-height: 50px;
+        }
+        #date span {
+            display: block;
+            float: left;
+            width: 36px;
+            height: 50px;
+            border: 1px solid #000;
+            background-image: url("1.png");
+            background-position: 0 -1px;
+        }
+    </style>
+</head>
+<body>
+<div id="date">
+    <p id="hour"><span></span><span></span><b>时</b></p>
+    <p id="minute"><span></span><span></span><b>分</b></p>
+    <p id="second"><span></span><span></span><b>秒</b></p>
+</div>
+<script>
+    var hour=document.getElementById("hour");
+    var minute=document.getElementById("minute");
+    var second=document.getElementById("second");
+    var hSpan=hour.getElementsByTagName("span");
+    var mSpan=minute.getElementsByTagName("span");
+    var sSpan=second.getElementsByTagName("span");
+    var targetDate;
+//    updateTime();
+    countDown({
+        date: "2019.10.3 23:41:00",
+        success: function (hour,minute,second) {
+            console.log(hour,minute,second);
+            for (var i=0;i<2;i++) {
+                hSpan[i].style.backgroundPosition="0px "+((-52*6)*hour[i]-1)+"px";
+                mSpan[i].style.backgroundPosition="0px "+((-52*6)*minute[i]-1)+"px";
+                sSpan[i].style.backgroundPosition="0px "+((-52*6)*second[i]-1)+"px";
+            }
+        },
+        callback: function () {
+            console.log("倒计时结束");
+        }
+    });
+    //封装函数
+    function countDown(json) {
+        //首先把json中的日期截取出来，求时间差，转换为标准日期形式
+        var date=json.date;
+        var dateArr=date.split(" ");
+        var reg1=/[\\\.-]/g;
+        var reg2=/[:]/g;
+        var ymd=dateArr[0].split(reg1);
+        var hms=dateArr[1]?dateArr[1].split(reg2):[];
+        var a,b,c,d,e,f;
+        a=ymd[0];
+        b=ymd[1]-1||0;
+        c=ymd[2]||1;
+        d=hms[0]||0;
+        e=hms[1]||0;
+        f=hms[2]||0;
+        var nowDate=new Date();
+        targetDate=new Date(a,b,c,d,e,f);
+        var D_value=targetDate-nowDate;
+//        console.log(D_value);
+        if (D_value<0) {
+            alert("时间戳不能在当前时间之前");
+        }
+        dateTransform();
+        var timer=setInterval(dateTransform,1000);
+        function dateTransform() {
+            var nowDate=new Date();
+            var D_value=targetDate-nowDate;
+            var hour=zeroFill(parseInt(D_value/1000/60/60));
+            var minute=zeroFill(parseInt(D_value/1000/60%60));
+            var second=zeroFill(parseInt(D_value/1000%60));
+            json.success&&json.success(hour,minute,second);
+            if (hour==0&&minute==0&&second==0) {
+                clearInterval(timer);
+                json.callback&&json.callback();
+            }
+
+        }
+    }
+    //把时间差值的毫秒数转换为年月日，时分秒的形式
+
+    //如果时，分，秒为一位数的话，前面补0
+    function zeroFill(time) {
+        return time<10?"0"+time:time+'';
+    }
+    //不停的更新时间差
+//    function updateTime() {
+//        dateTransform();
+//        var timer=setInterval(function () {
+//            var nowDate=new Date();
+//            var D_value=targetDate-nowDate;
+//            var hour=zeroFill(parseInt(D_value/1000/60/60));
+//            var minute=zeroFill(parseInt(D_value/1000/60%60));
+//            var second=zeroFill(parseInt(D_value/1000%60));
+//            yElement.innerHTML=hour;
+//            mElement.innerHTML=minute;
+//            dElement.innerHTML=second;
+//        },1000);
+//    }
+</script>
+</body>
+</html>

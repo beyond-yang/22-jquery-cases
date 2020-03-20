@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        a {
+            text-decoration: none;
+        }
+        #wrap {
+            width: 838px;
+            /*border: 1px solid #ddd;*/
+            margin: 50px auto;
+            /*background-color: pink;*/
+            box-shadow: 0 0 5px #000;
+        }
+        #wrap ul {
+            overflow: hidden;
+        }
+        #wrap li {
+            float: left;
+            width: 266px;
+            /*height: 2000px;*/
+
+            /*background-color: #fff8d6;*/
+        }
+        #wrap li:nth-child(2) {
+            margin-left: 20px;
+        }
+        #wrap li:nth-child(3) {
+            float: right;
+        }
+        #wrap .detail {
+            display: none;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            /*background-color: palegoldenrod;*/
+        }
+        #wrap .detail img {
+            display: block;
+        }
+        #wrap .detail a {
+            display: block;
+            color: #000;
+            margin: 8px 15px;
+        }
+        #wrap .detail .time {
+            height: 42px;
+            background-color: #eee;
+            border-top: 1px solid #ddd;
+        }
+        #wrap .detail .time p {
+            float: left;
+            width: 170px;
+            font-size: 12px;
+            line-height: 42px;
+            margin-left: 10px;
+            border-right: 1px solid #ddd;
+            color: #666;
+        }
+        #wrap .detail .time a {
+            height: 42px;
+            float: right;
+            color: #666;
+            line-height: 26px;
+            font-size: 12px;
+        }
+        #wrap .detail a:hover {
+            color: darkred;
+        }
+    </style>
+    <script src="js/jquery-1.12.1.min.js"></script>
+    <script src="js/data.js"></script>
+</head>
+<body>
+<div id="wrap">
+    <ul>
+        <li>
+            <!--<div class="detail">-->
+                <!--<img src="img/1.jpg" alt="">-->
+                <!--<a href="#">你们男神都爱的倪妮 就是个大写哒美好</a>-->
+                <!--<div class="time">-->
+                    <!--<p>2016/03/18 20:08</p>-->
+                    <!--<a href="#">阅读全文</a>-->
+                <!--</div>-->
+            <!--</div>-->
+        </li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+<script>
+    var $li=$("#wrap ul li");
+    var liLength=$li.length;
+    var $wrap=$("#wrap");
+    var index=0;//index存的是oDiv的序列号
+    show(8);
+    //当鼠标拖到窗口底部时，加载img
+    $(window).scroll(function () {
+        var wH=$wrap.offset().top+$wrap.height()-$(window).scrollTop();
+        if (wH<$(window).height()){
+            num=index+5;
+            show(num);
+        }
+    });
+    //创建div
+    function createDiv(i) {
+        var oDiv=document.createElement("div");
+        oDiv.className="detail";
+
+        var oImg=document.createElement("img");
+        oImg.src=imgData[i].src;
+        oDiv.appendChild(oImg);
+        var oA=document.createElement("a");
+        oA.innerHTML=imgData[i].dec;
+        oA.className="hover";
+        oDiv.appendChild(oA);
+        var oTime=document.createElement("div");
+        oTime.className="time";
+        oDiv.appendChild(oTime);
+        var oP=document.createElement("p");
+        oP.innerHTML=imgData[i].time;
+        oTime.appendChild(oP);
+        var oAA=document.createElement("a");
+        oAA.innerHTML="阅读全文";
+        oTime.appendChild(oAA);
+        return oDiv;
+    }
+    //获取height最小的li的序列号
+    function shortH() {
+        var short=0;
+        var shortH=$li.eq(short).height();
+        for (var i=0;i<liLength;i++) {
+            if (shortH>$li.eq(i).height()) {
+                short=i;
+                shortH=$li.eq(short).height();
+            }
+        }
+        return short;
+    }
+    //当图片加载出来时再创建div，把div加入到li中
+    function show(num) {
+        index++;
+        var oDiv=createDiv(index);
+        var i=shortH();
+        $li.eq(i).append($(oDiv));
+        $(oDiv).fadeIn(500);
+        var oImg=oDiv.getElementsByTagName("img")[0];
+        oImg.onload=function () {
+            if (index<num) {
+                show(num);
+            }
+        }
+    }
+</script>
+</body>
+</html>

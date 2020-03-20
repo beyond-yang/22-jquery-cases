@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #wrap {
+            width: 1206px;
+            height: 360px;
+            /*background-color: coral;*/
+            margin: 100px auto;
+        }
+        #wrap li {
+            overflow: hidden;
+            position: relative;
+            float: left;
+            width: 230px;
+            height: 360px;
+            /*background-color: burlywood;*/
+            list-style: none;
+            margin-right: 14px;
+        }
+        #wrap li img {
+            display: block;
+        }
+        #wrap li .cover {
+            position: absolute;
+            top: 0;
+            left: 230px;
+            width: 230px;
+            height: 360px;
+            background-image: url("img/new-bg.png");
+        }
+        #wrap li .cover p {
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+        }
+        #wrap li .cover p.first {
+            padding-top: 160px;
+        }
+    </style>
+    <script src="js/jquery-1.12.1.min.js"></script>
+</head>
+<body>
+    <div id="wrap">
+        <ul>
+            <li><a href="#">
+                <img src="img/1.jpg" alt="图片">
+                <div class="cover">
+                    <p class="first">春夏新品 上新无线</p>
+                    <p>点击进入</p>
+                </div>
+            </a></li>
+            <li><a href="#">
+                <img src="img/2.jpg" alt="图片">
+                <div class="cover">
+                    <p class="first">夏装新品发布 8折起</p>
+                    <p>点击进入</p>
+                </div>
+            </a></li>
+            <li><a href="#">
+                <img src="img/3.jpg" alt="图片">
+                <div class="cover">
+                    <p class="first">春装特惠 买二送一</p>
+                    <p>点击进入</p>
+                </div>
+            </a></li>
+            <li><a href="#">
+                <img src="img/4.jpg" alt="图片">
+                <div class="cover">
+                    <p class="first">春夏新品 低至158</p>
+                    <p>点击进入</p>
+                </div>
+            </a></li>
+            <li style="margin-right: 0"><a href="#">
+                <img src="img/5.jpg" alt="图片">
+                <div class="cover">
+                    <p class="first">美洲野牛旗舰店</p>
+                    <p>点击进入</p>
+                </div>
+            </a></li>
+        </ul>
+    </div>
+    <script>
+        var $wrapLi=$("#wrap li");
+        $wrapLi.hover(function (e) {
+           shortDis.call(this,e,true);
+
+        },function (e) {
+            shortDis.call(this,e,false);
+        });
+        //获取鼠标距离li哪条边距离最近的函数,并将cover进行相应的操作
+        function shortDis(e,bool) {
+            var tX,bX,yL,yR;
+            //获取各li距离文档的top，bottom，left，right值
+            var top=$(this).offset().top;
+            var bottom=top+$(this).height();
+            var left=$(this).offset().left;
+            var right=left+$(this).width();
+            //获取鼠标相对于文档的坐标
+            var x=e.pageX;
+            var y=e.pageY;
+            //获取鼠标距离li的上下左右边距离的绝对值
+            tX=Math.abs(y-top);
+            bX=Math.abs(y-bottom);
+            yL=Math.abs(x-left);
+            yR=Math.abs(x-right);
+            var short=Math.min(tX,bX,yL,yR);
+            switch (short) {
+                case tX:
+                        if (bool) {
+                            $(this).find(".cover").css({
+                                left: 0,
+                                top: -360+"px"
+                            }).animate({
+                                top: 0
+                            },100);
+                        } else {
+                            $(this).find(".cover").animate({
+                                top: -360+'px'
+                            },100)
+                        }
+                    break;
+                case bX:
+                        if (bool) {
+                            $(this).find(".cover").css({
+                                left: 0,
+                                top: 360+"px"
+                            }).animate({
+                                top: 0
+                            },100);
+                        } else {
+                            $(this).find(".cover").animate({
+                                top: 360+"px"
+                            });
+                        }
+                    break;
+                case yL:
+                        if (bool) {
+                            $(this).find(".cover").css({
+                                left: -230+"px",
+                                top: 0
+                            }).animate({
+                                left: 0
+                            },100);
+                        } else {
+                            $(this).find(".cover").animate({
+                                left: -230+"px"
+                            });
+                        }
+                    break;
+                case yR:
+                        if (bool) {
+                            $(this).find(".cover").css({
+                                left: 230+"px",
+                                top: 0
+                            }).animate({
+                                left: 0
+                            },100);
+                        } else {
+                            $(this).find(".cover").animate({
+                                left: 230+"px"
+                            });
+                        }
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>

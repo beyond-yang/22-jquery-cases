@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body,html {
+            overflow: hidden;
+            height: 100%;
+        }
+        #wrap {
+            position: relative;
+            height: 100%;
+        }
+        #wrap .module {
+            position: relative;
+            height: 100%;
+            /*border: 1px solid red;*/
+        }
+        #wrap .module .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 215px;
+            height: 65px;
+            background: url("img/logo.png") top left/100% 100%;
+        }
+        #wrap .click {
+            position: fixed;
+            top: 50%;
+            left: 50px;
+            width: 20px;
+            height: 180px;
+            margin-top: -90px;
+            /*background-color: #83C44E;*/
+        }
+        #wrap .click li {
+            list-style: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            margin-top: 4px;
+            cursor: pointer;
+        }
+        #wrap .click li.on {
+            background-color: #fff;
+        }
+        #wrap .fade img {
+            width: 100%;
+            height: 100%;
+        }
+        #wrap .fade {
+            transition: 1.2s;
+        }
+        #wrap .part1 .fade {
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            margin-left: -315px;
+            opacity: 0;
+        }
+        #wrap .part1 .fade.on {
+            top: 50%;
+            margin-top: -125px;
+            width: 630px;
+            height: 250px;
+            opacity: 1;
+        }
+        #wrap .part2 .fade {
+            position: absolute;
+            left: 50%;
+            bottom: -50%;
+            margin-left: -315px;
+            width: 630px;
+            height: 450px;
+            opacity: 0;
+
+        }
+        #wrap .part2 .fade.on {
+            top: 50%;
+            margin-top: -225px;
+            opacity: 1;
+        }
+        #wrap .part3 .fade {
+            position: absolute;
+            top: 50%;
+            margin-top: -110px;
+            left: -220px;
+            width: 570px;
+            height: 220px;
+            opacity: 0;
+        }
+        #wrap .part3 .fade.on {
+            left: 120px;
+            opacity: 1;
+        }
+
+    </style>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery.mousewheel.js"></script>
+</head>
+<body>
+<div id="wrap">
+    <div class="module part1">
+        <div class="fade"><img src="img/1-2.png" alt=""></div>
+    </div>
+    <div class="module part2">
+        <div class="fade"><img src="img/2-2.png" alt=""></div>
+    </div>
+    <div class="module part3">
+        <div class="fade"><img src="img/3-2.png" alt=""></div>
+    </div>
+    <div class="module">
+        <div class="fade"><img src="img/4-2.png" alt=""></div>
+    </div>
+    <div class="module">
+        <div class="fade"><img src="img/5-2.png" alt=""></div>
+    </div>
+    <div class="module">
+        <div class="fade"><img src="img/6-2.png" alt=""></div>
+    </div>
+    <div class="module">
+        <div class="fade"><img src="img/7-2.png" alt=""><img src="img/7-3.png" alt=""></div>
+    </div>
+    <div class="click">
+        <ul>
+            <li class="on"></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+</div>
+<script>
+    var date=new Date();
+    var $module=$("#wrap .module");
+    //.moudle背景图片的初始化
+    (function () {
+        $module.append($("<div class='logo'></div>"));
+
+        var str;
+        $module.each(function (i) {
+            str=i==1?"#ffa86c":"url('img/"+(i+1)+".jpg') no-repeat top center/cover";
+            $module.eq(i).css({
+                background: str
+            });
+        });
+    })();
+
+    //为li添加点击事件，点击li时页面滚动相应的高度，并且li的添加名字为on的样式
+    (function () {
+        var $li=$("#wrap .click li");
+        var index=0;
+        var wH=$(window).height();
+        $(window).resize(function () {
+            wH=$(this).height();
+        });
+        $li.click(function () {
+            index=$(this).index();
+            move();
+        });
+        //鼠标的滚动事件
+        $(document).mousewheel(function () {
+            if (new Date()-date>=500) {
+                date=new Date();
+                var d=arguments[1];
+                console.log(d);
+                index=d<0?(index>=$li.length-1?0:index+1):(index<=0?$li.length-1:index-1);
+                move();
+            }
+
+        });
+        function move() {
+            $li.eq(index).addClass("on").siblings("li").removeClass("on");
+            $("html,body").animate({
+                scrollTop: index*wH
+            },500,function () {
+                $module.eq(index).find(".fade").addClass("on");
+                $module.eq(index).siblings().find(".fade").removeClass("on");
+            });
+
+        }
+    })();
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #wrap {
+            position: relative;
+            width: 970px;
+            height: 300px;
+            margin: 100px auto;
+            /*border: 1px solid #ff66ff;*/
+        }
+        #wrap .pic {
+            position: relative;
+            width: 970px;
+            height: 270px;
+            /*border: 1px solid rebeccapurple;*/
+        }
+        #wrap .pic li {
+            position: absolute;
+            left: 485px;
+            top: 135px;
+            list-style: none;
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
+        #wrap .pic li.l1 {
+            width: 640px;
+            height: 270px;
+            left: 165px;
+            top: 0;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            z-index: 10;
+        }
+        #wrap .pic li.l2 {
+            width: 530px;
+            height: 220px;
+            left: 440px;
+            top: 25px;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            z-index: 9;
+        }
+        #wrap .pic li.l3 {
+            width: 300px;
+            height: 150px;
+            left: 970px;
+            top: 50px;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            z-index: 8;
+        }
+        #wrap .pic li.l9 {
+            width: 300px;
+            height: 150px;
+            left: -300px;
+            top: 50px;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            z-index: 8;
+        }
+        #wrap .pic li.l10 {
+            width: 530px;
+            height: 220px;
+            left: 0;
+            top: 25px;
+            filter: alpha(opacity=100);
+            opacity: 1;
+            z-index: 9;
+        }
+        #wrap .pic li span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,.5);
+            filter: alpha(opacity=50);
+            opacity: 1;
+            display: block;
+        }
+        #wrap .pic li img {
+            width: 100%;
+            height: 100%;
+        }
+        #wrap .btn div {
+            position: absolute;
+            top: 50%;
+            margin-top: -22px;
+
+            width: 45px;
+            height: 45px;
+            z-index: 666;
+        }
+        #wrap .btn div.left {
+            left: 0;
+            background-image: url(img/left.png);
+        }
+        #wrap .btn div.right {
+            right: 0;
+            background-image: url(img/right.png);
+        }
+        #wrap .tab {
+            width: 200px;
+            height: 10px;
+            padding: 10px 0;
+            /*border: 1px solid #ff66ff;*/
+            margin-left: 385px;
+        }
+        #wrap .tab li {
+            list-style: none;
+            float: left;
+            width: 10px;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 50%;
+            margin: 0 5px;
+        }
+        #wrap .tab li.on {
+            background-color: cadetblue;
+        }
+
+    </style>
+    <script src="js/jquery-1.12.1.min.js"></script>
+</head>
+<body>
+<div id="wrap">
+    <div class="pic">
+        <ul>
+            <li class="l1"><img src="img/1.jpg" alt=""></li>
+            <li class="l2"><img src="img/2.jpg" alt=""></li>
+            <li class="l3"><img src="img/3.jpg" alt=""></li>
+            <li><img src="img/4.jpg" alt=""></li>
+            <li><img src="img/5.jpg" alt=""></li>
+            <li><img src="img/6.jpg" alt=""></li>
+            <li><img src="img/7.jpg" alt=""></li>
+            <li><img src="img/8.jpg" alt=""></li>
+            <li class="l9"><img src="img/9.jpg" alt=""></li>
+            <li class="l10"><img src="img/10.jpg" alt=""></li>
+        </ul>
+    </div>
+    <div class="btn">
+        <div class="left"></div>
+        <div class="right"></div>
+    </div>
+    <div class="tab">
+        <ul>
+            <li class="on"></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+</div>
+<script>
+    var $picLi=$("#wrap .pic li");
+    var $left=$("#wrap .btn .left");
+    var $right=$("#wrap .btn .right");
+    var $tabLi=$("#wrap .tab li");
+    var index=0;
+    var nowTime=0;
+    //先给每个li中的图片上加一个遮挡层，默认第一个li的遮挡层的display属性为none
+    $picLi.append($("<span></span>"));
+    var $picSpan=$("#wrap .pic li").find("span");
+    $picSpan[0].style.display="none";
+    //点击pic里面的左右按钮
+    //先遍历每个li，把每个li的W，H，L，T，Z，S的display属性值，以及opacity的属性值用数组存起来
+    var arrW=[],arrH=[],arrL=[],arrT=[],arrZ=[],arrS=[],arrO=[];
+
+    //点击右按钮时再重新遍历li，把前一个li的宽，高，left,top等属性值赋值给后一个li
+    $right.click(function () {
+        if (new Date()-nowTime>500) {
+            nowTime=new Date();
+            index++;
+            index%=$picLi.length;
+            fn($(this).index());
+            $tabLi.eq(index).addClass("on").siblings().removeClass("on");
+        }
+    });
+    $left.click(function () {
+        if (new Date()-nowTime>500) {
+            index--;
+            index=index<0?$picLi.length-1:index;
+            fn($(this).index());
+            $tabLi.eq(index).addClass("on").siblings().removeClass("on");
+        }
+    });
+    //当tab里面的li被点击的时候，分为几种情况
+    $tabLi.click(function () {
+        $(this).addClass("on").siblings("li").removeClass("on");
+        var nowIndex=$(this).index();
+        var x=nowIndex-index;
+        //这种情况相当于点击pic中的右按钮
+        if (x==1||x==-($picLi.length-1)) {
+            fn(true);
+            //更新index的值
+            index=nowIndex;
+        } else if (x==-1||x==$picLi.length-1) {
+            fn(false);
+            //更新index的值
+            index=nowIndex;
+        } else if (index!=nowIndex) {
+            arr();
+            //再次遍历li，改变li的一些属性
+            $picLi.each(function (i) {
+                $(this).animate({
+                    width: 0,
+                    height: 0,
+                    opacity: 0,
+                    left: "485px",
+                    top: "135px"
+                },300);
+            });
+            setTimeout(function () {
+               $picLi.each(function (i) {
+                   var a=i-(nowIndex-index);
+                   if (a<0) {
+                       a+=$picLi.length;
+                   }
+                   if (a>$picLi.length) {
+                       a-=10;
+                   }
+                   $(this).find("span").css("display",arrS[a]);
+                   $(this).css("z-index",arrZ[a]).animate({
+                       width: arrW[a],
+                       height: arrH[a],
+                       opacity: arrO[a],
+                       left: arrL[a],
+                       top: arrT[a]
+                   },300);
+               });
+            });
+        }
+
+    });
+    //遍历picLi,把pic里的li的宽高，left，top等属性值存到数组中的函数
+    function arr() {
+        $picLi.each(function (i) {
+            arrW[i]=$(this).css("width");
+            arrH[i]=$(this).css("height");
+            arrL[i]=$(this).css("left");
+            arrT[i]=$(this).css("top");
+            arrZ[i]=$(this).css("z-index");
+            arrS[i]=$(this).find("span").css("display");
+            arrO[i]=$(this).css("opacity");
+        });
+    }
+    function fn(x) {
+        arr();
+        $picLi.each(function (i) {
+            //右按钮,把前一个li的属性赋值给后一个li的属性
+            if (x) {
+                var a=i-1;
+                a=a<0?$picLi.length-1:a;
+            } else {
+                //左按钮，把后一个li的属性值赋值给前一个li的属性
+                var a=i+1;
+                a=a==$picLi.length?0:a;
+            }
+            $(this).find("span").css("display",arrS[a]);
+            $(this).css("z-index",arrZ[a]);
+            $(this).animate({
+                "width": arrW[a],
+                "height": arrH[a],
+                "left": arrL[a],
+                "top": arrT[a],
+                "opacity": arrO[a]
+            })
+        });
+    }
+</script>
+</body>
+</html>

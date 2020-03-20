@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        #wrap {
+            width: 100%;
+            height: 540px;
+            /*border: 1px solid #3dddde;*/
+            margin: 20px auto;
+        }
+        #wrap .pic {
+            position: relative;
+            width: 870px;
+            height: 540px;
+            margin: 0 auto;
+
+        }
+        #wrap .pic ul {
+            width: 100%;
+            height: 100%;
+        }
+        #wrap .pic ul li {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+        }
+        #wrap .btn .left,
+        #wrap .btn .right {
+            position: absolute;
+            top: 50%;
+            margin-top: -32px;
+            width: 32px;
+            height: 63px;
+            background-image: url(img/arrow.jpg);
+        }
+        #wrap .btn .left {
+            left: -70px;
+        }
+        #wrap .btn .right {
+            right: -70px;
+            background-position: -80px 0;
+        }
+        #tab {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            border: 1px solid #999;
+        }
+        #tab .tabImg {
+            padding: 0 30px;
+        }
+        #tab .tabImg div {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            overflow: hidden;
+        }
+        #tab .tabImg ul {
+            position: relative;
+            width: 1000%;
+            height: 100px;
+            margin-left: 0;
+        }
+        #tab .tabImg ul #mark{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 130px;
+            height: 89px;
+            /*background-color: #55c8ff;*/
+            background:url(img/mark.png);
+            z-index: -1;
+        }
+        #tab .tabImg ul li {
+            float: left;
+            width: 120px;
+            height: 75px;
+            background-size: cover;
+            margin: 11px 15px;
+        }
+        #tab .prev,
+        #tab .next {
+            position: absolute;
+            width: 30px;
+            height: 100px;
+            line-height: 100px;
+            border: 1px solid #999;
+            background-color: #fff;
+            text-align: center;
+            font-size: 30px;
+            color: #999;
+            font-weight: 700;
+        }
+        #tab .prev {
+            top: 0;
+            left: 0;
+        }
+        #tab .next {
+            top: 0;
+            right: 0;
+        }
+        #tab .prev:hover,
+        #tab .next:hover {
+            background-color: #55c8ff;
+        }
+    </style>
+    <script src="js/jquery-1.12.1.min.js"></script>
+</head>
+<body>
+<div id="wrap">
+    <div class="pic">
+        <ul></ul>
+        <div class="btn">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+    </div>
+</div>
+<div id="tab">
+    <div class="prev">&lt;</div>
+    <div class="tabImg">
+        <div><ul></ul></div>
+    </div>
+    <div class="next">&gt;</div>
+</div>
+<script>
+
+    var $picUl=$("#wrap .pic ul");
+    var $tabUl=$("#tab .tabImg ul");
+    var $prev=$("#tab .prev");
+    var $next=$("#tab .next");
+    var $tabLi=null;
+    var index=0;
+    var num=0;
+    var winWidth=$(window).width();
+    var $picLi=null;
+    var $mark=null;
+    var $tab=$("#tab");
+    var $left=$("#wrap .btn .left");
+    var $right=$("#wrap .btn .right");
+
+    init();
+    $(window).resize(function () {
+        winWidth=$(window).width();
+    });
+    //tab中右按钮的点击事件`
+    $next.click(function () {
+        num++;
+        var max=-(($tabLi.width()+30)*22-winWidth+60);
+        var indexB=parseInt((($tabLi.width()+30)*22)/(winWidth-60))-1;
+        num=num>indexB?indexB+1:num;
+        var left=-num*(winWidth-60);
+        left=Math.max(max,left);
+        $tabUl.stop(true).animate({
+            marginLeft: left+"px"
+        });
+    });
+    //tab中左按钮的点击事件
+    $prev.click(function () {
+        num--;
+        index=num<0?0:num;
+        var min=0;
+        var left=-num*(winWidth-60);
+        left=Math.min(min,left);
+        $tabUl.stop(true).animate({
+            marginLeft: left+"px"
+        });
+    });
+    //当tab里面的li被点击时，mark的位置发生相应的改变，pic里面的li淡入，并且点击tab里面的li时，li要移到tab的中间位置，也有限度
+    $tabLi.click(function () {
+        $picLi.eq(index).fadeOut(200);
+        index=$(this).index();
+
+        move();
+    });
+    //.left和.right的点击事件
+    $left.click(function () {
+        $picLi.eq(index).fadeOut(200);
+        index==0?index=$tabLi.length-2:index--;
+        move();
+    });
+    $right.click(function(){
+        $picLi.eq(index).fadeOut(200);
+        index ++;
+        index %= $tabLi.length-1;
+        move();
+    });
+    //往.pic的ul中添加li标签，设置li标签的背景图片，往tab的ul中添加li标签，设置背景图片,以及tab里ul中加入mark
+    function init() {
+        for (var i=0; i<22; i++) {
+            $picLi=$("<li></li>");
+            $picUl.append($picLi);
+            $picLi.css({
+                "backgroundImage": "url(img/"+(i+1)+".jpg)"
+            });
+            $tabLi=$("<li></li>");
+            $tabUl.append($tabLi);
+            $tabLi.css({
+                "backgroundImage": "url(img/"+(i+1)+".jpg)"
+            });
+        }
+        $picLi=$("#wrap .pic li");
+        $picLi[0].style.display="block";
+        $tabUl.append($("<li id='mark'></li>"));
+        $mark=$("#tab .tabImg #mark");
+        $tabLi=$("#tab .tabImg li");
+        $mark.css({
+            left: $tabLi.eq(index).position().left-5+"px",
+            top: $tabLi.eq(index).position().top-9+"px"
+        });
+    }
+
+
+    function move() {
+        $mark.css({
+            left: $tabLi.eq(index).position().left-5+"px",
+            top: $tabLi.eq(index).position().top-9+"px"
+        });
+        $picLi.eq(index).fadeIn(200);
+        var left = -($tabLi.eq(index).position().left +20 - ($('#tab').width() +90)/2);
+        var max = $tabLi.length * ( $tabLi.width() + 30 ) - ($('#tab').width()+90);
+        var min = 0;
+        left = Math.max( -max , left );
+        left = Math.min( min , left );
+        $tabUl.stop().animate({
+            marginLeft : left + 'px'
+        });
+    }
+</script>
+</body>
+</html>

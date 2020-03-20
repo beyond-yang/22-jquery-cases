@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        img {
+            display: block;
+            width: 500px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<img src="img/1.jpg" alt="图片">
+<img src="img/2.jpg" alt="图片">
+<img src="img/3.jpg" alt="图片">
+<img src="img/4.jpg" alt="图片">
+<img src="img/5.jpg" alt="图片">
+<img src="img/6.jpg" alt="图片">
+<img src="img/7.jpg" alt="图片">
+<img src="img/8.jpg" alt="图片">
+<img src="img/9.jpg" alt="图片">
+<img src="img/10.jpg" alt="图片">
+<img src="img/11.jpg" alt="图片">
+<img src="img/12.jpg" alt="图片">
+<img src="img/13.jpg" alt="图片">
+<img src="img/14.jpg" alt="图片">
+<script>
+    //获取img
+    var oImg=document.getElementsByTagName("img");
+    for (var i=0;i<oImg.length;i++) {
+        oImg[i].dataSrc=oImg[i].src;
+        oImg[i].src="img/loading.jpg";
+    }
+    window.onload=function () {
+        var arr=[];
+        //把img中的图片的路径存到数组中，以方便后面的操作
+        for (var i=0;i<oImg.length;i++) {
+            arr[i]=oImg[i].dataSrc;
+        }
+        showImg();
+        window.addEventListener("scroll",showImg,false)
+        function showImg() {
+            //获取页面向上滚动出去的高度
+            var top=document.documentElement.scrollTop||document.body.scrollTop;
+            for (var i=arr.length-1;i>=0;i--) {//这个为啥要倒着循环啊
+                if (offsetTop(oImg[i])<top+winSize().height) {
+                    oImg[i].src=arr[i];
+                    arr.slice(i,1);
+                }
+            }
+        }
+    };
+
+    //获取元素距离文档的top值
+    function offsetTop(obj) {
+        var top=0;
+        while (obj!=document.body) {
+            top+=obj.offsetTop;
+            obj=obj.parentNode;
+        }
+        return top;
+    }
+    function winSize() {
+        var e = window,a = 'inner';
+        if (!('innerWidth' in window )){
+            a = 'client';
+            e = document.documentElement || document.body;
+        }
+        return { width : e[ a+'Width' ] , height : e[ a+'Height' ] };
+    }
+</script>
+</body>
+</html>

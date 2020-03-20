@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        html,body {
+            width: 100%;
+            height: 100%;
+        }
+        body {
+            overflow: hidden;
+        }
+        #wrap {
+            position: absolute;
+            left: 5%;
+            top: 5%;
+            width: 90%;
+            height: 90%;
+            /*background-color: pink;*/
+            transition: 1s;
+        }
+        #wrap.click{
+            /*width: 750px;*/
+            /*height: 500px;*/
+            /*top: 50%;*/
+            /*left: 50%;*/
+            /*margin-top: -250px;*/
+            /*margin-left: -375px;*/
+        }
+        #wrap ul li {
+            position: absolute;
+            width: 125px;
+            height: 125px;
+            box-shadow: 0 0 1px #000;
+            /*transition: left 1s,top 1s;*/
+        }
+        #wrap ul li img {
+            transform: scale(.92);
+            transition: transform 1s;
+        }
+        #wrap .button {
+            display: none;
+        }
+        #wrap .button input {
+            position: fixed;
+            top: 50%;
+            width: 80px;
+            height: 50px;
+            background-color: orange;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            /*border-radius: 8px;*/
+        }
+        #wrap .button input:nth-child(1) {
+            left: 0;
+        }
+        #wrap .button input:nth-child(2) {
+            right: 0;
+        }
+    </style>
+    <script src="js/jquery-1.12.1.min.js"></script>
+</head>
+<body>
+<div id="wrap">
+    <ul></ul>
+    <div class="button">
+        <input type="button" value="左按钮">
+        <input type="button" value="右按钮">
+    </div>
+</div>
+<script>
+    $(function () {
+        var $ul=$("#wrap ul");
+        var $wrap=$("#wrap");
+        var $wrapLi;
+        var $wrapLiImg;
+        var onOff=true;
+
+        init();
+        $wrapLi=$("#wrap ul li");
+        $wrapLiImg=$("#wrap ul li img");
+        var $button=$("#wrap .button input");
+        var $btn=$("#wrap .button");
+        var index=0;
+        var liTime=0;
+        var btnTime=0;
+        //li的定位
+        liPosition();
+        liRotate();
+        $(window).resize(liPosition);
+        //点击li时，图片放大，改变所有li的left和top值，使所有li紧密靠在一起，并居中在wrap中
+        $wrapLi.click(function () {
+            if (new Date()-liTime>2000) {
+                liTime=new Date();
+                if (onOff) {
+                    $btn.show();
+                    index=$(this).index();
+                    $wrapLiImg.css({
+                        "transform": "scale(1)"
+                    });
+                    setTimeout(function () {
+                        clickChange();
+                        $wrapLiImg.fadeOut(1000);
+                        $wrapLi.css({
+                            backgroundImage: "url(img/big/"+(index+1)+".jpg)"
+                        });
+                    },1000);
+                    $(window).off("resize").resize(clickChange);
+                    onOff=!onOff;
+                } else {
+                    $btn.hide();
+                    $wrapLiImg.fadeIn(1000,function () {
+                        $wrapLi.css({
+                            "backgroundImage": ""
+                        });
+                        $(this).css({
+                            "transform": "scale(.9)"
+                        });
+                    });
+//                $wrap.removeClass("click");
+                    liPosition();
+                    liRotate();
+                    onOff=!onOff;
+                    $(window).off("resize").resize(liPosition);
+                }
+            }
+
+
+        });
+        //点击左右按钮时切换图片
+        $button.click(function () {
+            if (new Date()-btnTime>800) {
+                btnTime=new Date();
+                var i=$(this).index();
+                if (i) {
+                    //右按钮
+                    index++;
+                    index%=$wrapLi.length;
+                } else {
+                    //左按钮
+                    index--;
+                    if (index==0) {
+                        index=$wrapLi.length-1;
+                    }
+                }
+                liBackground();
+            }
+
+
+        });
+        function init() {
+            for (var i=0;i<24;i++) {
+                var $li=$("<li><img src='img/"+(i+1)+".jpg'/></li>");
+                $li.appendTo($ul);
+            }
+        }
+        function liPosition() {
+            var wrapW=$wrap.width();
+            var wrapH=$wrap.height();
+            var m=(wrapW-6*125)/5;
+            var n=(wrapH-4*125)/3;
+            $wrapLi.each(function (i) {
+                var iX=i%6;
+                var iY=parseInt(i/6);
+                $(this).css({
+                    left: m*iX+iX*125+"px",
+                    top: n*iY+iY*125+"px",
+                    backgroundPosition: -iX*125+"px "+(-iY*125)+"px"
+                });
+            });
+        }
+        //li的随机旋转
+        function liRotate() {
+            $wrapLi.each(function () {
+                var rot=(Math.random()-0.5)*60;
+                $(this).css("transform","rotate("+rot+"deg)");
+            });
+        }
+        function clickChange() {
+            var wrapW=$wrap.width();
+            var wrapH=$wrap.height();
+//            $wrap.addClass("click");
+            $wrapLi.each(function (i) {
+                var iX=i%6;
+                var iY=parseInt(i/6);
+                var l=(wrapW-750)/2;
+                var t=(wrapH-500)/2;
+                $(this).css({
+                    left: l+iX*125+"px",
+                    top: t+iY*125+"px",
+                    transition: "transform 1s,left 1s,top 1s",
+                    transform: "rotate(0deg)"
+                });
+            });
+        }
+        function liBackground() {
+            var arr=[];
+            for (var i=0;i<24;i++) {
+                arr[i]=i;
+            }
+            var timer=setInterval(function () {
+                var r=Math.floor(Math.random()*arr.length);
+                $wrapLi.eq(arr[r]).css({backgroundImage: "url(img/big/"+(index+1)+".jpg)"});
+                arr.splice(r,1);
+                if (arr.length==0) {
+                    clearInterval(timer);
+                }
+            },30);
+        }
+    });
+
+</script>
+</body>
+</html>

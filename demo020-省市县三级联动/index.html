@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="js/jquery-1.12.1.min.js"></script>
+<script src="js/areaData.js"></script>
+<body>
+<select name="" id="sheng">
+    <option value="">省</option>
+</select>
+<select name="" id="shi">
+    <option value="">市</option>
+</select>
+<select name="" id="xian">
+    <option value="">县</option>
+</select>
+<script>
+    var $sheng=$("#sheng");
+    var $shi=$("#shi");
+    var $xian=$("#xian");
+    var shengArr=areaData.sheng;
+    var shiIndex=0;
+    for (var i=0;i<shengArr.length;i++) {
+        var $option=$("<option value='i+1'>"+shengArr[i]+"</option>");
+        $sheng.append($option);
+    }
+    $sheng.change(function () {
+        $shi.html('<option value="0">市</option>');
+        shiIndex=this.selectedIndex-1;
+        if (shiIndex>=0) {
+            var shi=areaData.shi["a_"+shiIndex];
+            for (var i=0;i<shi.length;i++) {
+                var $option=$("<option value="+(i+1)+">"+shi[i]+"</option>");
+                $shi.append($option);
+            }
+        }
+    });
+    $shi.change(function () {
+        $xian.html('<option value="0">市</option>');
+        var index=this.selectedIndex-1;
+        if (index>=0) {
+            var xian=areaData.xian["a_"+shiIndex+"_"+index];
+            for (var i=0;i<xian.length;i++) {
+                var $option=$("<option value="+(i+1)+">"+xian[i]+"</option>");
+                $xian.append($option);
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #wrap {
+            width: 400px;
+            height: 500px;
+            border: 1px solid #ccc;
+            margin: 100px;
+        }
+        #wrap .pic{
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+        #wrap .pic .pic-cover {
+            position: absolute;
+        }
+        #wrap .pic img {
+            display: block;
+            /*width: 400px;*/
+            /*height: 400px;*/
+        }
+        #wrap .pic .pic-cover .cover{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background-image: url(img1/cover.png);
+            cursor: move;
+        }
+        #wrap .pic .pic-cover .show {
+            display: none;
+            position: absolute;
+            top: 0;
+            right: -410px;
+            width: 400px;
+            height: 400px;
+            /*background-color: pink;*/
+            background-image: url(img1/1.jpg);
+        }
+        #wrap .tab {
+            width: 400px;
+            height: 54px;
+            margin-top: 20px;
+        }
+        #wrap .tab ul li{
+            position: relative;
+            float: left;
+            width: 50px;
+            height: 50px;
+            border: 2px solid #fff;
+            list-style: none;
+            margin-left: 20px;
+            transition: border .3s;
+        }
+        #wrap .tab ul li img {
+            position: absolute;
+            /*width: 50px;*/
+            /*height: 50px;*/
+        }
+        /*鼠标进入li时加入的类样式*/
+        #wrap .tab ul li.on {
+            border: 2px solid orange;
+        }
+    </style>
+    <script src="js/jquery-1.12.1.min.js"></script>
+</head>
+<body>
+<div id="wrap">
+    <div class="pic">
+        <div class="pic-cover">
+            <img src="img1/1.jpg" alt="" width="400" >
+            <div class="cover"></div>
+            <div class="show"></div>
+        </div>
+    </div>
+    <div class="tab">
+        <ul>
+            <li class="on"><img src="img1/1.jpg" alt=""></li>
+            <li><img src="img1/2.jpg" alt=""></li>
+            <li><img src="img1/3.jpg" alt=""></li>
+            <li><img src="img1/4.jpg" alt=""></li>
+            <li><img src="img1/6.jpg" alt=""></li>
+        </ul>
+    </div>
+</div>
+<script>
+    /*
+    * 第一步：先给定tabLi的宽度和高度，实现鼠标移入tab里的li时，给li加上红色的边框效果
+    * 第二步：实现鼠标移入tab里的li时，pic里面的图片变成和相应tab里li的图片
+    * 第三步：遍历tabLi，当tab里li里的img和pic里的img的宽和高不一样时，要分情况对图片进行等比例缩放
+    * 第四步：在遍历tabli的时候，同时对pic中的大图等比例缩放，并居中显示
+    * 第五步：增加遮挡层,当鼠标在pic-cover上移动时，使遮挡层跟随这鼠标位置移动，并且使遮挡层只能在pic-cover的div范围中移动
+    * 第六步：增加展示show层，鼠标移入pic-cover时，显示展示层
+    * 第七步：鼠标移入show时，隐藏cover和show
+    * 第八步：随着遮挡层在pic-cover上的移动，show中背景图片的backgroundPosition值的横坐标和纵坐标做出相应变化
+    * 第九步：根据picimg图片的大小改变遮挡层的大小，使右边的show里面可以完全看到图片的每一处
+    * **/
+    $(window).load(function () {
+        //获取tab里的li
+        var $tabLi=$("#wrap .tab li");
+        //获取tab里li里img
+        var $tabLiImg=$("#wrap .tab li img");
+        //获取pic里面的img
+        var $picImg=$("#wrap .pic img");
+        //获取img外层div--pic-cover
+        var $picCover=$("#wrap .pic-cover");
+        var $cover=$("#wrap .cover");
+        var $show=$("#wrap .pic-cover .show");
+        var index=0;
+        var imgArr=[];//用来存图片的宽高比,和图片的真实宽度和高度
+        //获取cover距离文档的top和left的值
+        var coverX=$cover.offset().left;
+        var coverY=$cover.offset().top;
+        init();
+        $cover.css({
+            display: "none"
+        });
+        $tabLi.mouseenter(function () {
+            index=$(this).index();
+            //第一步：实现鼠标移入tab里的li时，给li加上红色的边框效果
+            $(this).addClass("on").siblings("li").removeClass("on");
+            //第二步：实现鼠标移入tab里的li时，pic里面的图片变成和相应tab里li的图片
+            var src=$(this).find("img").attr("src");
+            //第四步：在遍历tabli的时候，同时对pic中的大图等比例缩放,并居中显示
+            $picImg.attr({
+                "src": src,
+                width: imgArr[index].width*400+"px",
+                height: imgArr[index].height*400+"px"
+            });
+            $picCover.css({
+                top: (400-imgArr[index].height*400)/2+"px",
+                left: (400-imgArr[index].width*400)/2+"px"
+            });
+
+            //第六步：增加展示show层，鼠标移入pic-cover时，显示展示层
+            $show.css({
+                backgroundImage: "url("+src+")"
+            });
+            //第九步：根据picimg图片的大小改变遮挡层的大小，使右边的show里面可以完全看到图片的每一处
+            var coverWidHei=400*$picCover.width()/imgArr[index].imgW;
+            $cover.css({
+                width: coverWidHei+"px",
+                height: coverWidHei+"px"
+            });
+        });
+
+        $picCover.mousemove(function (e) {
+            //第五步：增加遮挡层,当鼠标在pic-cover上移动时，使遮挡层跟随这鼠标位置移动，并且使遮挡层只能在pic-cover的div范围中移动
+            $cover.show();
+            $show.show();
+            var pX=e.pageX;
+            var pY=e.pageY;
+            var minusX=pX-coverX-$cover.width()/2;
+            var minusY=pY-coverY-$cover.height()/2;
+            //picImg的宽和高
+            var picCovWidth=$picCover.width();
+            var picCovHei=$picCover.height();
+            minusX=Math.max(0,minusX);
+            minusX=Math.min(minusX,picCovWidth-$cover.width());
+            minusY=Math.max(0,minusY);
+            minusY=Math.min(minusY,picCovHei-$cover.height());
+            $cover.css({
+                left: minusX+"px",
+                top: minusY+"px"
+            });
+            $show.css({
+                //第八步：随着遮挡层在pic-cover上的移动，show中背景图片的backgroundPosition值的横坐标和纵坐标做出相应变化
+                "backgroundPosition": (-(minusX/$picCover.width())*imgArr[index].imgW) +'px '+ (-(minusY/$picCover.height())*imgArr[index].imgH) +'px'
+            });
+
+        }).mouseleave(function () {
+            $cover.hide();
+            $show.hide();
+        });
+        //第七步：鼠标移入show时，隐藏cover和show
+        $show.mouseenter(function () {
+            $cover.hide();
+            $show.hide();
+        });
+
+        //遍历tab里的li
+        //第三步：当tab里li里的img和pic里的img的宽和高不一样时，要分情况对图片进行等比例缩放
+        //if宽度>=高度===>宽度=50，高度则按比例缩放，为使图片居中，给图片定位，并设置top值
+        //if宽度<高度====>高度=50，宽度则按比例缩放，为使图片居中，给图片定位，并设置left值
+        function init() {
+            $tabLiImg.each(function (i) {
+                //tabLi里img的宽度
+                var tabImgWid=$(this).width();
+                //tabLi里img的宽度
+                var tabImgHei=$(this).height();
+                if (tabImgWid>=tabImgHei) {
+                    $(this).attr({
+                        width: "50px",
+                        height: 50*tabImgHei/tabImgWid+"px"
+                    });
+                    $(this).css({
+                        top: (50-50*tabImgHei/tabImgWid)/2+"px"
+                    });
+                    imgArr[i]={
+                        width: 1,
+                        height: tabImgHei/tabImgWid,
+                        imgW: tabImgWid,
+                        imgH: tabImgHei
+                    };
+                } else {
+                    $(this).attr({
+                        width: 50*tabImgWid/tabImgHei+"px",
+                        height: "50px"
+                    });
+                    $(this).css({
+                        left: (50-50*tabImgWid/tabImgHei)/2+"px"
+                    });
+                    imgArr[i]={
+                        height: 1,
+                        width: tabImgWid/tabImgHei,
+                        imgW: tabImgWid,
+                        imgH: tabImgHei
+                    };
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

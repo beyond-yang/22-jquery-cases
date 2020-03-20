@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        #header {
+            width: 1071px;
+            height: 654px;
+            margin: 0 auto;
+        }
+        #content {
+            width: 1071px;
+            /*height: 2000px;*/
+            margin: 10px auto;
+        }
+        #content .main {
+            width: 680px;
+            /*height: 2000px;*/
+            /*border: 1px solid #ddd;*/
+        }
+        #content .main h2 {
+            font-family: "Microsoft YaHei";
+            font-weight: 400;
+            font-size: 22px;
+            line-height: 40px;
+            border-bottom: 1px solid #ddd;
+        }
+        #content .main ol {
+            margin: 30px 0 0 20px;
+        }
+        #content .main ol li {
+            position: relative;
+            width: 630px;
+            /*height: 500px;*/
+            border-left: 2px dotted #ddd;
+            padding-left: 30px;
+            padding-bottom: 35px;
+        }
+        #content .main ol .main_step {
+            position: absolute;
+            left: -18px;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            border-radius: 50%;
+            /*border: 1px solid #ff8828;*/
+            background-image: url("img/step.png");
+            background-position: 0 66px;
+            color: #fff;
+        }
+        #content .main ol .main_step.on {
+            background-position: 0 0;
+        }
+        #content .main ol p {
+            line-height: 25px;
+            margin-bottom: 15px;
+        }
+        #top {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: url("img/top.png") center no-repeat;
+            box-shadow: 0 2px 3px rgba(0,0,0,.1);
+            z-index: 9;
+        }
+        #content .slide {
+            position: fixed;
+            top: 42px;
+            width: 32px;
+            background-color: #fff;
+            padding-left: 4px;
+        }
+        #content .slide li {
+            display: none;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            border-radius: 50%;
+            background-image: url("img/step.png");
+            background-position: 0 32px;
+            text-align: center;
+            color: #fff;
+            cursor: pointer;
+        }
+        #content .slide li.on,
+        #content .slide li.hover{
+            background-position: 0 0;
+        }
+    </style>
+    <script src="js/jquery-1.12.1.min.js"></script>
+</head>
+<body>
+<div id="header">
+    <img src="img/header.png" alt="">
+</div>
+<div id="top"></div>
+<div id="content">
+    <div class="main">
+        <h2>步骤/方法</h2>
+        <ol>
+            <li>
+                <div class="main_step on">1</div>
+                <p>试用后油法，将面团揉成团，面包机30分钟即可！牛奶要用凉的，因为面包机揉面温度较高！</p>
+                <img src="img/1.jpg" alt="">
+            </li>
+            <li>
+                <div class="main_step">2</div>
+                <p>揉好的面团，用手抻开可以抻成薄一些的膜，有一定的扩展性！</p>
+                <img src="img/2.jpg" alt="">
+            </li>
+            <li>
+                <div class="main_step">3</div>
+                <p>然后揉成团，放入面包机中就行第一次发酵，发酵约1小时，是原面团的2倍大！用手按下去无回缩就证明发酵好了！</p>
+                <img src="img/3.jpg" alt="">
+            </li>
+            <li>
+                <div class="main_step">4</div>
+                <p>发酵好的面团排气揉光滑，称重</p>
+                <img src="img/4.jpg" alt="">
+            </li>
+            <li>
+                <div class="main_step">5</div>
+                <p>将面团平均分成5份，揉成光滑的面团！盖上保鲜膜醒发15分钟</p>
+                <img src="img/5.jpg" alt="">
+            </li>
+            <li>
+                <div class="main_step">6</div>
+                <p>然后揉成你想放的模具中，没有就用纸拖，或可以不用也行。</p>
+                <img src="img/6.jpg" alt="">
+            </li>
+            <li>
+                <div class="main_step">7</div>
+                <p>将烤箱中放一碗热水保持湿度，把面包生坯放入烤箱就行二次发酵，烤箱温度不易超过30度，发酵40分钟！</p>
+                <img src="img/7.jpg" alt="">
+            </li>
+            <li>
+                <div class="main_step">8</div>
+                <p>然后烤箱预热180度，上下火加热中下层烤20左右即可！</p>
+                <img src="img/8.jpg" alt="">
+            </li>
+            <li>
+                <div class="main_step">9</div>
+                <p>软软的很好吃！</p>
+                <img src="img/9.jpg" alt="">
+            </li>
+        </ol>
+        <div class="slide">
+            <ul>
+                <li class="on">1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    var $top=$("#top");
+    var $step=$(".main .main_step");
+    var $slideLi=$("#content .slide li");
+    var index=0;
+    $(window).scroll(function () {
+        var scrollTop=$(document).scrollTop();
+        scrollTop>=200?$top.show():$top.hide();
+        $step.each(function (i) {
+
+            var distanceLi=$(this).offset().top-$(document).scrollTop();
+            if (distanceLi<(42+i*32)) {
+                index=i+1;
+                $slideLi.eq(i).show();
+            } else {
+                $slideLi.eq(i).hide();
+            }
+        });
+        $step.eq(index).addClass("on").parent().siblings().find("div").removeClass("on");
+        index&&$slideLi.eq(index-1).addClass("on").siblings().removeClass("on");
+    });
+    $slideLi.click(function () {
+        var index1=$(this).index();
+        $("html,body").animate({
+            scrollTop: $step.eq(index1).offset().top
+        },500);
+    }).hover(function () {
+        $(this).addClass("hover");
+    },function () {
+        $(this).removeClass("hover");
+    });
+</script>
+</body>
+</html>

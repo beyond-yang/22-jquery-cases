@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #banner {
+            position: relative;
+            width: 730px;
+            height: 454px;
+            border: 1px solid red;
+            margin: 100px auto;
+        }
+        ul {
+            list-style: none;
+        }
+        #banner .pic {
+            width: 100%;
+            height: 100%;
+        }
+        #banner .pic ul li {
+            position: absolute;
+            display: none;
+        }
+        #banner .tab {
+            position: absolute;
+            left: 50%;
+            margin-left: -70px;
+            bottom: 10px;
+            width: 144px;
+            height: 20px;
+            /*background: pink;*/
+        }
+        #banner .tab li {
+            float: left;
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+            background: #999;
+            border-radius: 50%;
+            margin: 1px 3px;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+            color: #fff;
+        }
+        #banner .tab li.on {
+            background: #f90;
+        }
+        #banner .btn {
+            display: none;
+        }
+        #banner .btn div {
+            position: absolute;
+            top: 50%;
+            margin-top: -20px;
+            width: 30px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            background: rgba(0,0,0,.3);
+            font-size: 30px;
+            color: rgba(255,255,255,.5);
+        }
+        #banner .btn div.hover {
+            background: rgba(0,0,0,.5);
+        }
+        #banner .btn .btnRight {
+            right: 0;
+        }
+    </style>
+    <script type="text/javascript" src="js/jquery-1.12.1.min.js"></script>
+</head>
+<body>
+<div id="banner">
+    <div class="pic">
+        <ul>
+            <li style="display: block;"><a href="#"><img src="img/1.jpg" alt="购物"></a></li>
+            <li><a href="#"><img src="img/2.jpg" alt="购物"></a></li>
+            <li><a href="#"><img src="img/3.jpg" alt="购物"></a></li>
+            <li><a href="#"><img src="img/4.jpg" alt="购物"></a></li>
+            <li><a href="#"><img src="img/5.jpg" alt="购物"></a></li>
+            <li><a href="#"><img src="img/6.jpg" alt="购物"></a></li>
+        </ul>
+    </div>
+    <div class="tab">
+        <ul>
+            <li class="on">1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li>
+        </ul>
+    </div>
+    <div class="btn">
+        <div class="btnLeft">&lt</div>
+        <div class="btnRight">&gt</div>
+    </div>
+</div>
+<script>
+    var $tabLi=$("#banner .tab li");
+    var $picLi=$("#banner .pic li");
+    var $banner=$("#banner");
+    var $btn=$("#banner .btn");
+    var $btnDiv=$("#banner .btn div");
+    var index=0;
+    var timeId;
+    $tabLi.hover(function () {
+        index=$(this).index();
+        fade();
+    });
+    $banner.hover(function () {
+        $btn.show();
+        clearInterval(timeId);
+    },function () {
+        $btn.hide();
+        auto();
+    });
+    $btnDiv.click(function () {
+        var i=$(this).index();
+        i>0?index++:index--;
+        fade();
+    }).mousedown(function () {
+        return false;
+    });
+    function fade() {
+        $tabLi.eq(index%$tabLi.length).addClass("on").siblings("li").removeClass("on");
+        $picLi.eq(index%$picLi.length).stop(true).fadeIn().siblings("li").stop(true).fadeOut();
+    }
+    auto();
+    function auto() {
+        timeId=setInterval(function () {
+            index++;
+            fade();
+        },1000);
+    }
+</script>
+</body>
+</html>
